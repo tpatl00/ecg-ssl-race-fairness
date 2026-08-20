@@ -40,7 +40,7 @@ ecg-ssl-race-fairness/
 │       ├── compile_predictions.py  # Aggregate fold predictions + demographics
 │       └── metrics_scripts/
 │           ├── cindex.py           # C-index + pairwise Wilcoxon tests
-│           └── fairness_metrics.py # PG, CV, WGP fairness metrics
+│           └── fairness_metrics.py # PG, CV fairness metrics
 ├── hpc/                            # HPC training scripts (Random-Init ECG-FM)
 │   ├── master_ecgfm_e2e_hpc.py    # E2E training orchestrator
 │   ├── ecg_fm_randinit_hpc.py     # Random-init ECG-FM encoder
@@ -56,7 +56,7 @@ ecg-ssl-race-fairness/
 │   └── metrics/
 │       ├── cindex_results.csv      # Per-model per-subgroup C-index
 │       ├── cindex_pairwise.csv     # Pairwise Wilcoxon test results
-│       └── fairness_metrics.csv    # PG, CV, WGP per model
+│       └── fairness_metrics.csv    # PG, CV per model
 ├── requirements.txt
 ├── LICENSE
 └── README.md
@@ -153,19 +153,19 @@ python src/analysis/metrics_scripts/fairness_metrics.py
 
 | Model | C-index | Std |
 |-------|---------|-----|
-| ResNet1D | 0.800 | 0.006 |
-| Pretrained ECG-FM | 0.791 | 0.005 |
-| Random-Init ECG-FM | 0.789 | 0.006 |
+| ResNet1D | 0.8004 | 0.0058 |
+| Pretrained ECG-FM | 0.7905 | 0.0054 |
+| Random-Init ECG-FM | 0.7885 | 0.0059 |
 
 ### Fairness Metrics (Race: White, Black, Asian)
 
-| Model | Performance Gap (PG) | Coefficient of Variation (CV) | Worst-Group Performance (WGP) |
-|-------|---------------------|-------------------------------|------------------------------|
-| ResNet1D | 0.050 | 0.025 | 0.787 |
-| Pretrained ECG-FM | 0.028 | 0.015 | 0.782 |
-| Random-Init ECG-FM | 0.055 | 0.030 | 0.774 |
+| Model | Performance Gap (PG) | Coefficient of Variation (CV) |
+|-------|---------------------|-------------------------------|
+| ResNet1D | 0.0499 | 0.0253 |
+| Pretrained ECG-FM | 0.0283 | 0.0146 |
+| Random-Init ECG-FM | 0.0551 | 0.0298 |
 
-ResNet1D achieved the highest overall C-index (0.800), significantly outperforming both ECG-FM variants (p < 0.05, Holm-Bonferroni corrected). However, the Pretrained ECG-FM exhibited the smallest racial disparities (PG = 0.028, CV = 0.015), while the Random-Init ECG-FM had the largest, indicating that SSL pretraining contributes to more equitable performance across racial subgroups.
+ResNet1D achieved the highest overall C-index (0.8004), significantly outperforming both ECG-FM variants (p < 0.05, Holm-Bonferroni corrected). However, the Pretrained ECG-FM exhibited the smallest racial disparities (PG = 0.0283, CV = 0.0146), while the Random-Init ECG-FM had the largest, indicating that SSL pretraining contributes to more equitable performance across racial subgroups.
 
 ## Citation
 
