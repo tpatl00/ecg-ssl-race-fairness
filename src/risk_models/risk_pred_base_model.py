@@ -190,7 +190,7 @@ class RiskPredictionModel(pl.LightningModule):
 
 
 
-    # Implemented from the work of Xuelong An Wang
+    # Implemented from the work of Xuelong An
     def cox_loss(self, log_risk: torch.Tensor, durations: torch.Tensor, events: torch.Tensor):
         """
         Compute Cox proportional hazards loss.
