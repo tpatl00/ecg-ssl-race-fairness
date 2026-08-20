@@ -1,28 +1,16 @@
-# ECG Self-Supervised Learning & Race Fairness
+# Are ECG Foundation Models Always Better? A Study of Heart Failure Risk Prediction and Fairness
 
-**Evaluating Self-Supervised ECG Representation Learning for Cardiac Risk Prediction: Performance and Fairness Across Racial Groups**
+Tanay Patel, Xuelong An, and Chen Chen
 
-Tanay Patel, Venet Osmani
+*School of Computer Science, University of Sheffield, Sheffield, UK*
 
-*University of Sheffield*
-
-Published at the **AI in Healthcare Conference (AIHC 2025)** as a long-form abstract.
+Published at the **AI in Healthcare (AIiH) 2026** conference as a long-form abstract.
 
 ---
 
 ## Abstract
 
-Self-supervised learning (SSL) offers a promising approach to learning generalisable ECG representations without relying on labelled data. Foundation models such as ECG-FM, pretrained on large-scale datasets using SSL objectives (SimCLR, BYOL, VICReg), have shown strong performance on downstream cardiac tasks. However, it remains unclear whether these learned representations encode or mitigate demographic biases present in clinical data.
-
-This study evaluates SSL pretraining strategies for cardiac risk prediction and measures demographic fairness across racial groups using the Harvard-Emory ECG Database (HEEDB). We compare three modelling approaches:
-
-| Model | Description |
-|-------|-------------|
-| **Model A** | ResNet1D supervised baseline (trained from scratch) |
-| **Model B** | ECG-FM frozen linear probe (pretrained weights, frozen encoder) |
-| **Model C** | ECG-FM random-init end-to-end (same architecture, no pretrained weights) |
-
-All models are evaluated using stratified 10-fold cross-validation with Harrell's concordance index (C-index), Wilcoxon signed-rank tests with Holm-Bonferroni correction, and fairness metrics (Performance Gap, Coefficient of Variation, Worst-Group Performance).
+ECG foundation models which leverage self-supervised learning (SSL), can learn data-efficient, transferable representations from large-scale unlabelled ECG recordings to enable strong performance across a wide range of cardiac disease diagnostic tasks. However, few studies have explored the benefits of using foundation models for risk prediction tasks or whether they can improve demographic equity in these more challenging, yet clinically important, settings. To our knowledge, we present the first race-stratified fairness evaluation of a self-supervised ECG foundation model for incident heart failure (HF) risk prediction. We compare a supervised ResNet1D with an ECG foundation model (ECG-FM) using the Harvard-Emory ECG Database, with predictive performance measured by the concordance index (C-index) and fairness assessed across sex and racial subgroups using the Performance Gap (PG) and Coefficient of Variation (CV). Surprisingly, ResNet1D achieved the highest predictive performance, with a mean C-index of 0.800, significantly outperforming the pretrained ECG-FM (0.791) and the randomly initialised ECG-FM (0.789) (p < 0.05). In contrast, the pretrained ECG-FM yielded the smallest racial disparities, while the randomly initialised ECG-FM exhibited the largest, indicating that pretraining could reduce performance disparities across demographic subgroups. Sex-related disparities were very mild across all models, likely because the dataset had a balanced sex distribution. Our study demonstrates that demographic fairness in clinical risk prediction cannot be characterised by aggregate predictive performance alone. As racial imbalance remains common in clinical datasets, algorithmic innovations should be accompanied by routine demographic subgroup evaluation to ensure the fairness, reliability, and trustworthiness of AI-ECG models before clinical deployment.
 
 ## Repository Structure
 
@@ -30,8 +18,8 @@ All models are evaluated using stratified 10-fold cross-validation with Harrell'
 ecg-ssl-race-fairness/
 ├── src/
 │   ├── config/                     # Training configurations
-│   │   ├── ecg_fm_config.yaml      # ECG-FM linear probe (Model B)
-│   │   └── resnet_baseline_config.yaml  # ResNet baseline (Model A)
+│   │   ├── ecg_fm_config.yaml      # ECG-FM linear probe (Pretrained ECG-FM)
+│   │   └── resnet_baseline_config.yaml  # ResNet1D baseline
 │   ├── models/
 │   │   ├── ecg_fm.py               # ECG-FM encoder wrapper
 │   │   └── resnet1d.py             # 1D ResNet encoder
@@ -44,7 +32,7 @@ ecg-ssl-race-fairness/
 │   ├── classes/
 │   │   └── heedb_dataloader.py     # HEEDB PyTorch dataset & dataloader
 │   ├── master/
-│   │   └── master.py               # Training orchestrator (Models A & B)
+│   │   └── master.py               # Training orchestrator
 │   ├── utils/
 │   │   ├── stratified_cv.py        # Stratified K-fold cross-validation
 │   │   └── create_ecg_embeddings.py  # ECG-FM embedding extraction
@@ -53,7 +41,7 @@ ecg-ssl-race-fairness/
 │       └── metrics_scripts/
 │           ├── cindex.py           # C-index + pairwise Wilcoxon tests
 │           └── fairness_metrics.py # PG, CV, WGP fairness metrics
-├── hpc/                            # HPC training scripts (Model C)
+├── hpc/                            # HPC training scripts (Random-Init ECG-FM)
 │   ├── master_ecgfm_e2e_hpc.py    # E2E training orchestrator
 │   ├── ecg_fm_randinit_hpc.py     # Random-init ECG-FM encoder
 │   ├── ecgfm_e2e_risk_pred_model_hpc.py  # E2E risk prediction model
@@ -129,24 +117,23 @@ Generate memory-mapped ECG arrays from the raw HEEDB dataset:
 python src/preprocessing/generate_preprocessed_ecg_memmap.py
 ```
 
-### Model A: ResNet1D Supervised Baseline
+### ResNet1D Supervised Baseline
 
 ```bash
 python src/master/master.py --experiment resnet_baseline
 ```
 
-### Model B: ECG-FM Frozen Linear Probe
+### Pretrained ECG-FM (Frozen Linear Probe)
 
 ```bash
 python src/master/master.py --experiment ecgfm_linear
 ```
 
-### Model C: ECG-FM Random-Init End-to-End (HPC)
+### Random-Init ECG-FM End-to-End (HPC)
 
-Model C requires GPU resources (trained on A100 80GB). On an HPC cluster with SLURM:
+The Random-Init ECG-FM (90.9M parameters) requires GPU resources (trained on A100 80GB). On an HPC cluster with SLURM:
 
 ```bash
-# Edit hpc/slurm/submit_ecgfm_e2e_array.sh with your username and email
 sbatch hpc/slurm/submit_ecgfm_e2e_array.sh
 ```
 
@@ -162,34 +149,34 @@ python src/analysis/metrics_scripts/fairness_metrics.py
 
 ## Key Results
 
-### Overall C-index (10-fold CV)
+### Overall C-index (Stratified 10-Fold CV)
 
 | Model | C-index | Std |
 |-------|---------|-----|
-| Model A (ResNet1D) | 0.800 | 0.006 |
-| Model B (ECG-FM linear) | 0.790 | 0.005 |
-| Model C (ECG-FM E2E) | 0.789 | 0.006 |
+| ResNet1D | 0.800 | 0.006 |
+| Pretrained ECG-FM | 0.791 | 0.005 |
+| Random-Init ECG-FM | 0.789 | 0.006 |
 
-### Fairness Metrics (Race axis: White, Black, Asian)
+### Fairness Metrics (Race: White, Black, Asian)
 
-| Model | Performance Gap | Coefficient of Variation | Worst-Group Performance |
-|-------|----------------|--------------------------|------------------------|
-| Model A (ResNet1D) | 0.050 | 0.025 | 0.787 |
-| Model B (ECG-FM linear) | 0.028 | 0.015 | 0.782 |
-| Model C (ECG-FM E2E) | 0.055 | 0.030 | 0.774 |
+| Model | Performance Gap (PG) | Coefficient of Variation (CV) | Worst-Group Performance (WGP) |
+|-------|---------------------|-------------------------------|------------------------------|
+| ResNet1D | 0.050 | 0.025 | 0.787 |
+| Pretrained ECG-FM | 0.028 | 0.015 | 0.782 |
+| Random-Init ECG-FM | 0.055 | 0.030 | 0.774 |
 
-Model A (supervised ResNet) achieves the highest overall C-index. Model B (ECG-FM frozen linear probe) shows the smallest racial performance gap and lowest coefficient of variation, suggesting that SSL-pretrained representations may encode more equitable feature representations across racial groups.
+ResNet1D achieved the highest overall C-index (0.800), significantly outperforming both ECG-FM variants (p < 0.05, Holm-Bonferroni corrected). However, the Pretrained ECG-FM exhibited the smallest racial disparities (PG = 0.028, CV = 0.015), while the Random-Init ECG-FM had the largest, indicating that SSL pretraining contributes to more equitable performance across racial subgroups.
 
 ## Citation
 
 If you use this code in your research, please cite:
 
 ```bibtex
-@inproceedings{patel2025ecgssl,
-  title={Evaluating Self-Supervised ECG Representation Learning for Cardiac Risk Prediction: Performance and Fairness Across Racial Groups},
-  author={Patel, Tanay and Osmani, Venet},
-  booktitle={AI in Healthcare Conference (AIHC)},
-  year={2025}
+@inproceedings{patel2026ecgfm,
+  title={Are {ECG} Foundation Models Always Better? {A} Study of Heart Failure Risk Prediction and Fairness},
+  author={Patel, Tanay and An, Xuelong and Chen, Chen},
+  booktitle={AI in Healthcare (AIiH)},
+  year={2026}
 }
 ```
 
