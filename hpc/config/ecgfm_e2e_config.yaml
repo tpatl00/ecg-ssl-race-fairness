@@ -1,0 +1,42 @@
+# Random-init ECG-FM end-to-end. STANAGE HPC config (A100 80GB).
+# Paths are Linux /mnt/parscratch
+
+random_seed: 42
+data_dir: '/mnt/parscratch/users/$USER/diss/data'
+n_splits: 10
+eval_only: False
+
+dataloader_config:
+  batch_size: 64
+  num_workers: 6
+
+ecg_fm:
+  # Architecture-cfg source only — weights discarded (random init).
+  checkpoint_path: '/mnt/parscratch/users/$USER/diss/ecg_fm_checkpoints/mimic_iv_ecg_physionet_pretrained.pt'
+  fairseq_path:    '/mnt/parscratch/users/$USER/diss/fairseq-signals'
+
+model_config:
+  hidden_dim: 256
+  dropout: 0.1
+
+optimizer_config:
+  lr: 0.00001 # from 0.0001
+  weight_decay: 0.1 # from 0.00001
+  warmup_steps: 500      # bumped from 100
+  max_steps: 0           # filled in by master_ecgfm_e2e_hpc.py
+
+trainer_config:
+  max_epochs: 100
+  accelerator: 'gpu'
+  devices: 1
+  gradient_clip_val: 1.0
+  enable_checkpointing: True
+  log_every_n_steps: 10
+
+freeze_encoder: false
+
+wandb:
+  project_name: 'ecg-fm-risk'
+  entity: '<your-wandb-entity>'
+  run_name_prefix: 'ecg_fm_e2e'
+  disable_logging: False

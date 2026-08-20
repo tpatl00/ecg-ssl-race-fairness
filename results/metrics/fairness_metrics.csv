@@ -1,0 +1,7 @@
+model,axis,PG,CV,WGP,best_subgroup,worst_subgroup
+resnet_baseline,Sex,0.001645,0.001028,0.798918,Male,Female
+resnet_baseline,Race,0.049904,0.025282,0.787109,Black,White
+ecg_fm,Sex,0.008720,0.005522,0.785237,Male,Female
+ecg_fm,Race,0.028328,0.014578,0.781689,Black,White
+ecg_fm_e2e,Sex,0.006321,0.004013,0.784427,Male,Female
+ecg_fm_e2e,Race,0.055095,0.029846,0.774163,Black,White

@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Data (too large / requires credentialed access)
+data/
+checkpoints/
+fairseq-signals/
+
+# Training artifacts
+training_outputs/
+lightning_logs/
+wandb/
+*.ckpt
+
+# Large intermediate results
+results/training_csvs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

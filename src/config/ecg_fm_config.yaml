@@ -1,0 +1,44 @@
+
+random_seed: 42
+data_dir: './data/harvard-emory-dataset'
+n_splits: 10
+eval_only: False
+
+dataloader_config:
+  batch_size: 32
+  num_workers: 4
+
+
+ecg_fm:
+  checkpoint_path: './checkpoints/mimic_iv_ecg_physionet_pretrained.pt'
+  fairseq_path: './fairseq-signals'
+
+
+model_config:
+  hidden_dim: 256
+  dropout: 0.3
+
+
+optimizer_config:
+  lr: 0.0001
+  weight_decay: 0.00001
+  warmup_steps: 100
+  max_steps: 0
+
+
+trainer_config:
+  accumulate_grad_batches: 2
+  max_epochs: 100
+  accelerator: 'auto'
+  devices: 1
+  gradient_clip_val: 100.0
+  enable_checkpointing: True
+
+freeze_encoder: true
+
+
+wandb:
+  project_name: 'ecg-fm-risk'
+  entity: '<your-wandb-entity>'
+  run_name_prefix: 'ecg_fm_risk'
+  disable_logging: False

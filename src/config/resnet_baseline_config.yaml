@@ -1,0 +1,39 @@
+
+random_seed: 42
+data_dir: './data/harvard-emory-dataset'
+n_splits: 10
+eval_only: False
+
+dataloader_config:
+  batch_size: 256
+  num_workers: 0
+
+
+model_config:
+  hidden_dim: 256
+  dropout: 0.3
+
+
+optimizer_config:
+  lr: 0.0001
+  weight_decay: 0.00001
+  warmup_steps: 100
+  max_steps: 0
+
+
+trainer_config:
+  max_epochs: 100
+  accelerator: 'auto'
+  devices: 1
+  gradient_clip_val: 100.0
+  enable_checkpointing: True
+  log_every_n_steps: 10
+
+freeze_encoder: false
+
+
+wandb:
+  project_name: 'ecg-fm-risk'
+  entity: '<your-wandb-entity>'
+  run_name_prefix: 'resnet_baseline'
+  disable_logging: True
