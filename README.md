@@ -4,7 +4,6 @@ Tanay Patel, Xuelong An, and Chen Chen
 
 *School of Computer Science, University of Sheffield, Sheffield, UK*
 
-Published at the **AI in Healthcare (AIiH) 2026** conference as a long-form abstract.
 
 ---
 
