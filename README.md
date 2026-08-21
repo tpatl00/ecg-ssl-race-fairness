@@ -4,9 +4,9 @@ Tanay Patel, Xuelong An, and Chen Chen
 
 *School of Computer Science, University of Sheffield, Sheffield, UK*
 
-Accepted at the **AI in Healthcare (AIiH) 2026** conference as a long-form abstract.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21922076.svg)](https://doi.org/10.5281/zenodo.21922076)
 
-[Long-form abstract on Zenodo](https://zenodo.org/records/21922076)
+Accepted at the **AI in Healthcare (AIiH) 2026** conference as a long-form abstract.
 
 ---
 
@@ -178,7 +178,9 @@ If you use this code in your research, please cite:
   title={Are {ECG} Foundation Models Always Better? {A} Study of Heart Failure Risk Prediction and Fairness},
   author={Patel, Tanay and An, Xuelong and Chen, Chen},
   booktitle={AI in Healthcare (AIiH)},
-  year={2026}
+  year={2026},
+  doi={10.5281/zenodo.21922076},
+  url={https://zenodo.org/records/21922076}
 }
 ```
 
